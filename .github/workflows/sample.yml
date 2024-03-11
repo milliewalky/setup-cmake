@@ -1,0 +1,19 @@
+name: test setup CMake
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: setup CMake
+      uses: milliewalky/setup-cmake@v1
+
+    - name: check CMake capabilities
+      shell: cmd
+      run: cmake -h
