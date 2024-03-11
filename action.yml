@@ -1,0 +1,28 @@
+name: setup CMake action
+description: download and unpack CMake for gh actions
+    
+runs:
+  using: composite
+  steps:
+    - name: download CMake
+      shell: cmd
+      working-directory: ${{ runner.temp }}
+      run: curl -L -o cmake-3.29.0-rc3-windows-x86_64.msi https://github.com/Kitware/CMake/releases/download/v3.29.0-rc3/cmake-3.29.0-rc3-windows-x86_64.msi
+
+    - name: unpack CMake
+      shell: cmd
+      working-directory: ${{ runner.temp }}
+      run: msiexec /a cmake-3.29.0-rc3-windows-x86_64.msi /qb TARGETDIR=%cd%\CMake
+
+    - name: rearrange files
+      shell: cmd
+      working-directory: ${{ runner.temp }}
+      run: |
+        move CMake\CMake\bin CMake
+        move CMake\CMake\doc CMake
+        move CMake\CMake\man CMake
+        move CMake\CMake\share CMake
+
+    - name: add CMake to path
+      shell: powershell
+      run: echo "${{ runner.temp }}\CMake\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
